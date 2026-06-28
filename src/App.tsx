@@ -331,7 +331,7 @@ function App() {
 							GitHub
 						</a>
 						<a
-							href='/skipy.dev/Skipy_CV.pdf'
+							href={`${import.meta.env.BASE_URL}Skipy_CV.pdf`}
 							target='_blank'
 							rel='noopener noreferrer'
 							className='btn btn-o'
