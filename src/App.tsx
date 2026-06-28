@@ -117,7 +117,75 @@ function App() {
 		}
 	}
 
-	// Хэндлер для клика по ссылкам в меню (чтобы закрывалось на мобилке)
+	useEffect(() => {
+		if (!window.matchMedia('(pointer: fine)').matches) return
+		const dot = document.querySelector<HTMLDivElement>('.cursor-dot')
+		if (!dot) return
+
+		let mouseX = -100
+		let mouseY = -100
+		let dotX = -100
+		let dotY = -100
+		let started = false
+		let raf = 0
+
+		const onMove = (e: globalThis.MouseEvent) => {
+			mouseX = e.clientX
+			mouseY = e.clientY
+			if (!started) {
+				started = true
+				dotX = mouseX
+				dotY = mouseY
+				document.documentElement.classList.add('has-custom-cursor')
+			}
+		}
+
+		const animate = () => {
+			dotX += (mouseX - dotX) * 0.18
+			dotY += (mouseY - dotY) * 0.18
+			dot.style.transform = `translate(${dotX}px, ${dotY}px)`
+			raf = requestAnimationFrame(animate)
+		}
+		raf = requestAnimationFrame(animate)
+
+		const hoverables = document.querySelectorAll<HTMLElement>('a, button')
+		const onEnter = () => dot.classList.add('is-hovering')
+		const onLeave = () => dot.classList.remove('is-hovering')
+		hoverables.forEach(el => {
+			el.addEventListener('mouseenter', onEnter)
+			el.addEventListener('mouseleave', onLeave)
+		})
+
+		window.addEventListener('mousemove', onMove)
+		return () => {
+			window.removeEventListener('mousemove', onMove)
+			cancelAnimationFrame(raf)
+			document.documentElement.classList.remove('has-custom-cursor')
+			hoverables.forEach(el => {
+				el.removeEventListener('mouseenter', onEnter)
+				el.removeEventListener('mouseleave', onLeave)
+			})
+		}
+	}, [])
+
+	useEffect(() => {
+		const revealEls = document.querySelectorAll('.reveal')
+		if (!revealEls.length) return
+		const observer = new IntersectionObserver(
+			entries => {
+				entries.forEach(entry => {
+					if (entry.isIntersecting) {
+						entry.target.classList.add('is-visible')
+						observer.unobserve(entry.target)
+					}
+				})
+			},
+			{ threshold: 0.15, rootMargin: '0px 0px -40px 0px' },
+		)
+		revealEls.forEach(el => observer.observe(el))
+		return () => observer.disconnect()
+	}, [])
+
 	const handleMenuLinkClick = (e: MouseEvent<HTMLElement>, id: string) => {
 		handleScroll(e, id)
 		setIsMenuOpen(false)
@@ -125,6 +193,8 @@ function App() {
 
 	return (
 		<>
+			<div className='cursor-dot' />
+
 			<div className='scroll-progress-track'>
 				<div
 					className='scroll-progress-bar'
@@ -173,7 +243,7 @@ function App() {
 									href='#experience'
 									onClick={e => handleMenuLinkClick(e, 'experience')}
 								>
-									/experience
+									experience
 								</a>
 								<span className='nav-arrow'>↘</span>
 							</div>
@@ -223,13 +293,10 @@ function App() {
 				</div>
 			</header>
 
-			<main id='hero-top' className='hero'>
+			<main id='hero-top' className='hero grid-bg'>
 				<span className='decor dec-1 flicker'>[ INIT_SEQ: TRUE ]</span>
 				<span className='decor dec-2'>v.1.0.4</span>
 				<span className='decor dec-5'>ROOT_ACCESS: GRANTED</span>
-				<span className='deco-line deco-line-v deco-line-hero-l' />
-				<span className='deco-line deco-line-v deco-line-hero-r' />
-				<span className='deco-line deco-line-h deco-line-hero-b' />
 
 				<div className='container hero-container'>
 					<div className='blob' />
@@ -256,19 +323,27 @@ function App() {
 							Say Hello
 						</a>
 						<a
-							href='https://github.com'
+							href='https://github.com/skipydev'
 							target='_blank'
 							rel='noopener noreferrer'
 							className='btn btn-o'
 						>
 							GitHub
 						</a>
+						<a
+							href='/Skipy_CV.pdf'
+							target='_blank'
+							rel='noopener noreferrer'
+							className='btn btn-o'
+						>
+							Download CV
+						</a>
 					</div>
 				</div>
 			</main>
 
 			<section id='about' className='section'>
-				<div className='container numbered-section'>
+				<div className='container numbered-section reveal'>
 					<div className='section-side'>
 						<div className='section-num'>01</div>
 						<div className='section-num-label'>about</div>
@@ -302,6 +377,7 @@ function App() {
 					<div className='section-main' style={{ position: 'relative' }}>
 						<span className='decor dec-3 flicker'>// SEC_01_READY</span>
 						<span className='decor dec-6'>[ LOAD_MEM: 1024MB ]</span>
+						<span className='deco-line deco-line-v deco-line-about' />
 						<div className='about-eyebrow'>$ profile</div>
 						<h2 className='about-headline'>
 							I write software.
@@ -338,8 +414,8 @@ function App() {
 				</div>
 			</section>
 
-			<section id='stack' className='section'>
-				<div className='container numbered-section'>
+			<section id='stack' className='section grid-bg'>
+				<div className='container numbered-section reveal'>
 					<div className='section-side'>
 						<div className='section-num'>02</div>
 						<div className='section-num-label'>stack</div>
@@ -374,7 +450,6 @@ function App() {
 						<span className='decor dec-4' style={{ top: '-20px', left: '0' }}>
 							[ SYS.MODULES_LOADED ]
 						</span>
-						<span className='deco-line deco-line-h deco-line-stack' />
 						<div className='sec-title'>the working stack</div>
 
 						<div className='bento-grid'>
@@ -522,7 +597,7 @@ function App() {
 			</section>
 
 			<section id='experience' className='section'>
-				<div className='container numbered-section'>
+				<div className='container numbered-section reveal'>
 					<div className='section-side'>
 						<div className='section-num'>03</div>
 						<div className='section-num-label'>experience</div>
@@ -582,17 +657,14 @@ function App() {
 				</div>
 			</section>
 
-			<section id='contact' className='section contact-hero-style'>
+			<section id='contact' className='section contact-hero-style grid-bg'>
 				<div className='container' style={{ position: 'relative' }}>
 					<span className='decor dec-1 flicker' style={{ top: '-40px' }}>
 						[ END_OF_FILE ]
 					</span>
 					<span className='decor dec-7'>AWAITING_INPUT...</span>
-					<span className='deco-line deco-line-h deco-line-contact-top' />
-					<span className='deco-line deco-line-v deco-line-contact-l' />
-					<span className='deco-line deco-line-v deco-line-contact-r' />
 
-					<div className='contact-hero-content'>
+					<div className='contact-hero-content reveal'>
 						<div
 							className='about-eyebrow'
 							style={{ justifyContent: 'center', display: 'flex' }}
@@ -615,57 +687,6 @@ function App() {
 							got a project or an idea that needs solid technical execution, I'd
 							love to talk. Reach out on messengers or drop me an email.
 						</p>
-
-						<div className='contact-channels'>
-							<a
-								href='#'
-								className='channel-card'
-								target='_blank'
-								rel='noopener noreferrer'
-							>
-								<span className='channel-icon-wrap'>
-									<img
-										src='https://cdn.simpleicons.org/telegram'
-										alt=''
-										className='channel-icon'
-										loading='lazy'
-									/>
-								</span>
-								<span className='channel-label'>Telegram</span>
-							</a>
-							<a
-								href='#'
-								className='channel-card'
-								target='_blank'
-								rel='noopener noreferrer'
-							>
-								<span className='channel-icon-wrap'>
-									<img
-										src='https://cdn.simpleicons.org/discord'
-										alt=''
-										className='channel-icon'
-										loading='lazy'
-									/>
-								</span>
-								<span className='channel-label'>Discord</span>
-							</a>
-							<a
-								href='https://github.com/skipydev'
-								className='channel-card'
-								target='_blank'
-								rel='noopener noreferrer'
-							>
-								<span className='channel-icon-wrap'>
-									<img
-										src='https://cdn.simpleicons.org/github'
-										alt=''
-										className='channel-icon'
-										loading='lazy'
-									/>
-								</span>
-								<span className='channel-label'>GitHub</span>
-							</a>
-						</div>
 
 						<div
 							className='term'
@@ -699,7 +720,7 @@ function App() {
 								<span className='ta'>github</span>
 								<span className='td'> = </span>
 								<a href='#' className='term-link'>
-									"github.com/skipydev"
+									github.com/skipydev"
 								</a>
 								{'\n'}
 								<span className='tg'>SUCCESS: Signal sent.</span>{' '}
@@ -717,6 +738,61 @@ function App() {
 					</div>
 				</div>
 			</section>
+
+			<footer className='site-footer'>
+				<div className='container footer-container'>
+					<span className='footer-copy'>
+						© 2026 skipy.dev — built with React, Vite & TS
+					</span>
+
+					<div className='footer-links'>
+						<a
+							href='https://github.com/skipydev'
+							target='_blank'
+							rel='noopener noreferrer'
+							aria-label='GitHub'
+						>
+							<img
+								src='https://cdn.simpleicons.org/github'
+								alt=''
+								className='footer-icon'
+								loading='lazy'
+							/>
+						</a>
+						<a
+							href='https://t.me/@PACCBET_3A_CEBEPOM'
+							target='_blank'
+							rel='noopener noreferrer'
+							aria-label='Telegram'
+						>
+							<img
+								src='https://cdn.simpleicons.org/telegram'
+								alt=''
+								className='footer-icon'
+								loading='lazy'
+							/>
+						</a>
+						<a
+							href='discord.com'
+							target='_blank'
+							rel='noopener noreferrer'
+							aria-label='Discord'
+						>
+							<img
+								src='https://cdn.simpleicons.org/discord'
+								alt=''
+								className='footer-icon'
+								loading='lazy'
+							/>
+						</a>
+					</div>
+
+					<span className='footer-status'>
+						<span className='blink-dot dot-green' />
+						all systems operational
+					</span>
+				</div>
+			</footer>
 		</>
 	)
 }

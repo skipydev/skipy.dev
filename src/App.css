@@ -21,6 +21,7 @@
 	--accent: #27c93f;
 	--accent-dim: rgba(39, 201, 63, 0.1);
 	--neon-blur: rgba(39, 201, 63, 0.05);
+	--grid-line: rgba(0, 0, 0, 0.035);
 }
 
 html.dark-theme {
@@ -36,6 +37,7 @@ html.dark-theme {
 	--accent: #38e660;
 	--accent-dim: rgba(56, 230, 96, 0.1);
 	--neon-blur: rgba(56, 230, 96, 0.08);
+	--grid-line: rgba(255, 255, 255, 0.045);
 }
 
 html,
@@ -57,11 +59,64 @@ a,
 button,
 .btn,
 .term-link,
-.channel-card,
 .theme-toggle,
 .nav a,
 .logo {
 	cursor: pointer;
+}
+
+/* КАСТОМНЫЙ КУРСОР-ТОЧКА */
+.cursor-dot {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 10px;
+	height: 10px;
+	margin-left: -5px;
+	margin-top: -5px;
+	border-radius: 50%;
+	background: var(--accent);
+	box-shadow:
+		0 0 10px var(--accent),
+		0 0 22px var(--accent-dim);
+	pointer-events: none;
+	z-index: 9999;
+	opacity: 0;
+	transition:
+		width 0.2s ease,
+		height 0.2s ease,
+		margin 0.2s ease,
+		background 0.2s ease,
+		border-color 0.2s ease,
+		opacity 0.2s ease;
+	will-change: transform;
+}
+html.has-custom-cursor .cursor-dot {
+	opacity: 1;
+}
+.cursor-dot.is-hovering {
+	width: 28px;
+	height: 28px;
+	margin-left: -14px;
+	margin-top: -14px;
+	background: transparent;
+	border: 1.5px solid var(--accent);
+	box-shadow: 0 0 16px var(--accent-dim);
+}
+@media (pointer: fine) {
+	html.has-custom-cursor,
+	html.has-custom-cursor a,
+	html.has-custom-cursor button,
+	html.has-custom-cursor * {
+		cursor: none !important;
+	}
+}
+
+/* На мобилке/тач-устройствах кастомный курсор не нужен в принципе — глушим жёстко */
+@media (hover: none), (max-width: 768px) {
+	.cursor-dot {
+		display: none !important;
+	}
 }
 
 a {
@@ -157,6 +212,35 @@ html.dark-theme .bg-text {
 	background: var(--accent);
 	box-shadow: 0 0 8px var(--accent);
 	transition: width 0.1s linear;
+}
+
+/* НЕБОЛЬШОЙ SCROLL-REVEAL */
+.reveal {
+	opacity: 0;
+	transform: translateY(24px);
+	transition:
+		opacity 0.7s ease,
+		transform 0.7s ease;
+}
+.reveal.is-visible {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+/* ФОНОВАЯ СЕТОЧКА — точечная подсветка "техничности" в паре мест на странице */
+.grid-bg {
+	position: relative;
+}
+.grid-bg::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background-image:
+		linear-gradient(var(--grid-line) 1px, transparent 1px),
+		linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+	background-size: 56px 56px;
+	pointer-events: none;
+	z-index: 0;
 }
 
 /* HEADER */
@@ -516,47 +600,13 @@ html.dark-theme .bg-text {
 	left: -2px;
 }
 
-.deco-line-hero-l {
-	top: 12%;
-	left: 8%;
-	height: 140px;
-}
-.deco-line-hero-r {
-	top: 18%;
-	right: 9%;
-	height: 100px;
-}
-.deco-line-hero-b {
-	bottom: 8%;
-	left: 50%;
-	width: 90px;
-	transform: translateX(-50%);
-}
-.deco-line-stack {
-	top: -28px;
-	right: 0;
-	width: 140px;
-}
-.deco-line-contact-top {
-	top: -50px;
-	left: 50%;
-	width: 120px;
-	transform: translateX(-50%);
-}
-.deco-line-contact-l {
-	top: 0;
-	left: -2%;
-	height: 80%;
-}
-.deco-line-contact-r {
-	top: 0;
-	right: -2%;
-	height: 80%;
+.deco-line-about {
+	top: 6px;
+	left: -32px;
+	height: 220px;
 }
 @media (max-width: 760px) {
-	.deco-line-hero-r,
-	.deco-line-contact-l,
-	.deco-line-contact-r {
+	.deco-line-about {
 		display: none;
 	}
 }
@@ -1088,51 +1138,6 @@ html.dark-theme .bento-card:hover {
 	width: 100%;
 }
 
-/* CONTACT CHANNELS — доп. способ связи помимо терминала */
-.contact-channels {
-	display: flex;
-	justify-content: center;
-	gap: 14px;
-	flex-wrap: wrap;
-	margin-bottom: 32px;
-}
-.channel-card {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	padding: 10px 18px;
-	background: var(--surface);
-	border: 1px solid var(--border);
-	border-radius: 30px;
-	color: var(--ink);
-	font-size: 13px;
-	transition: all 0.25s ease;
-}
-.channel-card:hover {
-	border-color: var(--accent);
-	transform: translateY(-2px);
-	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-}
-html.dark-theme .channel-card:hover {
-	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-}
-.channel-icon-wrap {
-	width: 20px;
-	height: 20px;
-	border-radius: 50%;
-	background: #ffffff;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-shrink: 0;
-	overflow: hidden;
-}
-.channel-icon {
-	width: 13px;
-	height: 13px;
-	display: block;
-}
-
 /* TERMINAL */
 .term {
 	width: 100%;
@@ -1212,6 +1217,8 @@ html.dark-theme .channel-card:hover {
 /* BUTTONS */
 .btns {
 	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
 	gap: 12px;
 }
 .btn {
@@ -1304,4 +1311,54 @@ html.dark-theme .channel-card:hover {
 .btn-o:hover {
 	border-color: var(--ink);
 	background: var(--surface);
+}
+
+/* FOOTER */
+.site-footer {
+	width: 100%;
+	border-top: 1px dashed var(--border);
+	padding: 28px clamp(20px, 5vw, 40px);
+}
+.footer-container {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 16px;
+}
+.footer-copy {
+	font-size: 11.5px;
+	color: var(--muted-2);
+}
+.footer-links {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+.footer-icon {
+	width: 16px;
+	height: 16px;
+	display: block;
+	opacity: 0.6;
+	transition:
+		opacity 0.2s ease,
+		transform 0.2s ease;
+}
+.footer-links a:hover .footer-icon {
+	opacity: 1;
+	transform: translateY(-2px);
+}
+.footer-status {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 11px;
+	color: var(--accent);
+	letter-spacing: 0.04em;
+}
+@media (max-width: 600px) {
+	.footer-container {
+		justify-content: center;
+		text-align: center;
+	}
 }
