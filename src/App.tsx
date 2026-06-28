@@ -331,7 +331,7 @@ function App() {
 							GitHub
 						</a>
 						<a
-							href='/Skipy_CV.pdf'
+							href='/skipy.dev/Skipy_CV.pdf'
 							target='_blank'
 							rel='noopener noreferrer'
 							className='btn btn-o'
