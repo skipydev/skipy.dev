@@ -605,7 +605,7 @@ export default function App() {
 							<div className='profile-left'>
 								<div className='profile-avatar-wrap'>
 									<img
-										src='/public/avatar.gif'
+										src={`${import.meta.env.BASE_URL}avatar.gif`}
 										alt='Skipy'
 										className='profile-avatar'
 									/>
@@ -656,14 +656,6 @@ export default function App() {
 											className='btn btn-outline magnetic'
 										>
 											git
-										</a>
-										<a
-											href='/Skipy_CV.pdf'
-											target='_blank'
-											rel='noopener noreferrer'
-											className='btn btn-outline magnetic'
-										>
-											CV
 										</a>
 									</div>
 								</div>
@@ -1066,8 +1058,8 @@ export default function App() {
 									{
 										name: 'Discord',
 										sub: 'group calls, longer chats',
-										value: 'skipy_dev',
-										url: 'https://discord.com/users/YOUR_ID',
+										value: 'socoolbaby',
+										url: 'https://discord.gg/VKqSreqpHw',
 										Icon: DiscordIcon,
 									},
 									{
@@ -1173,7 +1165,7 @@ export default function App() {
 							<TelegramIcon />
 						</a>
 						<a
-							href='https://discord.com'
+							href='https://discord.gg/VKqSreqpHw'
 							target='_blank'
 							rel='noopener noreferrer'
 							aria-label='Discord'
@@ -1193,7 +1185,7 @@ export default function App() {
 			<div className='vinyl-wrap'>
 				<audio
 					ref={audioRef}
-					src='/Hugo TSR - Fenêtre Sur Rue.mp3'
+					src={`${import.meta.env.BASE_URL}Hugo TSR - Fenêtre Sur Rue.mp3`}
 					loop
 					onError={() => {}}
 				/>
