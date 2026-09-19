@@ -1,42 +1,41 @@
-# React + TypeScript + Vite
+# { skipy.dev }
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+My personal portfolio site — built with React, TypeScript, Vite and SCSS.
+Live at [skipy.dev](https://skipy.dev).
 
-Currently, two official plugins are available:
+## Open source
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+This site is open source. If you're building your own portfolio and see
+something here you like — a component, an animation, the ASCII donut, the
+whole layout — feel free to grab it. No need to ask, no need to credit,
+just take what's useful and make it yours.
 
-## React Compiler
+## Stack
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- React 19 + TypeScript
+- Vite
+- SCSS (no component libraries, no Tailwind)
+- Everything else (the terminal chrome, the marquee, the ASCII 3D donut) is
+  hand-rolled, no extra dependencies
 
-Note: This will impact Vite dev & build performances.
+## Running locally
 
-## Expanding the ESLint configuration
+```bash
+npm install
+npm run dev      # dev server
+npm run build    # production build
+npm run lint     # eslint
+```
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['***.{ts,tsx}'],
-    extends: [
-      
-      
-      reactX.configs['recommended-typescript'],
-      
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      
-    },
-  },
-])
+## Structure
 
 ```
+src/
+  components/   one component per section (Hero, About, Stack, Experience, ...)
+  data/         copy and content, kept separate from markup
+  hooks/        the interactive bits (ASCII rendering, marquee, magnetic hover, ...)
+```
+
+## License
+
+MIT — see [LICENSE](./LICENSE).
