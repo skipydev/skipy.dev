@@ -38,4 +38,4 @@ src/
 
 ## License
 
-MIT — see [LICENSE](./LICENSE).
+MIT — READ --> [LICENSE](./LICENSE).
