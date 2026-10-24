@@ -48,10 +48,7 @@ export function Hero({ bannerRef, asciiCanvasRef, onScrollTo }: HeroProps) {
 
 							<p className='hero-subtitle'>
 								I build web applications. Mostly backend, some frontend. I'm
-								19. Sometimes the code works, sometimes it doesn't — that's
-								just development. I know Go, TypeScript, React. I like
-								understanding how things actually work instead of blindly
-								following tutorials. That's basically it.
+								17
 							</p>
 
 							<div className='hero-buttons'>
